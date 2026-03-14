@@ -8,24 +8,52 @@
 </head>
 <body>
 
-<div class="card">
-    <div class="chip">Voice ready</div>
-    <h1>🎤 AI Voice Calculator</h1>
-    <p class="hint">Tap the mic, speak a math expression (e.g., "12 divided by 3"), and hear the answer.</p>
+<main class="grid">
+  <section class="card hero">
+      <div class="eyebrow">AI Calculator · Voice + Keyboard</div>
+      <h1>Speak it. Type it.<br><span class="accent">Get instant math.</span></h1>
+      <p class="lede">Natural language to arithmetic with safe evaluation. Say "twenty one times four" or type "21 * 4".</p>
 
-    <div class="controls">
-        <button id="voiceButton" onclick="toggleVoice()">Start Listening</button>
-        <span id="status" class="status">Idle</span>
-    </div>
+      <div class="controls">
+          <button id="voiceButton" class="primary" onclick="toggleVoice()">🎤 Start Listening</button>
+          <span id="status" class="status">Idle</span>
+      </div>
 
-    <div class="output">
-        <p><strong>Heard:</strong> <span id="command">—</span></p>
-        <p><strong>Expression:</strong> <span id="expression">—</span></p>
-        <p><strong>Result:</strong> <span id="result">—</span></p>
-    </div>
+      <form id="calcForm" class="form" onsubmit="submitExpression(event)">
+          <label for="expressionInput">Keyboard mode</label>
+          <div class="input-row">
+              <input id="expressionInput" name="expression" type="text" autocomplete="off" placeholder='Examples: "18 / 3", "2 ** 4", "7 plus 8 minus 3"' />
+              <button type="submit" class="secondary">Calculate</button>
+          </div>
+      </form>
 
-    <p id="error" class="error"></p>
-</div>
+      <div class="output">
+          <div class="row"><span class="label">Heard / Typed</span><span id="command">—</span></div>
+          <div class="row"><span class="label">Parsed Expression</span><span id="expression">—</span></div>
+          <div class="row highlight"><span class="label">Result</span><span id="result">—</span></div>
+      </div>
+
+      <p id="error" class="error"></p>
+  </section>
+
+  <section class="card info">
+      <h2>Supported arithmetic</h2>
+      <ul class="pill-list">
+          <li>Addition & subtraction: <code>+</code> <code>-</code></li>
+          <li>Multiplication: <code>*</code></li>
+          <li>Division: <code>/</code></li>
+          <li>Powers: <code>**</code></li>
+          <li>Parentheses for grouping</li>
+      </ul>
+      <h3>Try saying</h3>
+      <ol class="examples">
+          <li>"what is fifty divided by five"</li>
+          <li>"( ten minus three ) times two"</li>
+          <li>"two to the power of five"</li>
+      </ol>
+      <div class="history" id="history"></div>
+  </section>
+</main>
 
 <script>
 const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
@@ -81,7 +109,7 @@ function toggleVoice() {
 
 function updateButton() {
     const btn = document.getElementById('voiceButton');
-    btn.textContent = listening ? 'Stop' : 'Start Listening';
+    btn.textContent = listening ? '⏹ Stop' : '🎤 Start Listening';
 }
 
 function updateStatus(text) {
@@ -97,7 +125,7 @@ function clearError() {
 }
 
 async function sendCommand(command) {
-    document.getElementById('command').textContent = command;
+    document.getElementById('command').textContent = command || '—';
     document.getElementById('expression').textContent = '—';
     document.getElementById('result').textContent = '…';
 
@@ -115,6 +143,7 @@ async function sendCommand(command) {
 
         document.getElementById('expression').textContent = data.expression;
         document.getElementById('result').textContent = data.result;
+        pushHistory(command, data.expression, data.result);
         speak(`The answer is ${data.result}`);
     } catch (err) {
         setError(err.message);
@@ -127,6 +156,26 @@ function speak(text) {
     const utterance = new SpeechSynthesisUtterance(text);
     synth.cancel();
     synth.speak(utterance);
+}
+
+function submitExpression(event) {
+    event.preventDefault();
+    const value = document.getElementById('expressionInput').value.trim();
+    if (!value) {
+        setError('Type an expression first.');
+        return;
+    }
+    sendCommand(value);
+}
+
+function pushHistory(command, expression, result) {
+    const history = document.getElementById('history');
+    const row = document.createElement('div');
+    row.className = 'history-row';
+    row.innerHTML = `<span>${command}</span><span class=\"muted\">${expression}</span><span class=\"pill\">${result}</span>`;
+    history.prepend(row);
+    // keep last 6 entries
+    while (history.children.length > 6) history.removeChild(history.lastChild);
 }
 
 updateButton();
