@@ -1,0 +1,131 @@
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;600&display=swap');
+
+:root {
+  --bg: #0b1221;
+  --card: rgba(17, 24, 39, 0.9);
+  --accent: #f97316;
+  --text: #e5e7eb;
+  --muted: #9ca3af;
+  --error: #f43f5e;
+  --glow: rgba(249, 115, 22, 0.25);
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  font-family: 'Space Grotesk', 'Segoe UI', system-ui, sans-serif;
+  background: radial-gradient(120% 120% at 20% 20%, #1f2937 0%, #0b1221 45%, #060913 100%);
+  color: var(--text);
+}
+
+.card {
+  width: min(720px, 100%);
+  background: var(--card);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  box-shadow: 0 25px 80px rgba(0, 0, 0, 0.45), 0 0 0 1px var(--glow);
+  border-radius: 20px;
+  padding: 28px 32px;
+  backdrop-filter: blur(10px);
+}
+
+h1 {
+  margin: 8px 0 6px;
+  font-size: 32px;
+  letter-spacing: -0.02em;
+}
+
+.hint {
+  margin: 0 0 18px;
+  color: var(--muted);
+}
+
+.chip {
+  display: inline-flex;
+  padding: 6px 12px;
+  border-radius: 999px;
+  background: rgba(249, 115, 22, 0.12);
+  color: var(--accent);
+  font-weight: 600;
+  font-size: 13px;
+  letter-spacing: 0.02em;
+}
+
+.controls {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+button {
+  padding: 14px 20px;
+  font-size: 16px;
+  font-weight: 600;
+  border: none;
+  border-radius: 14px;
+  background: linear-gradient(135deg, #f97316, #fb923c);
+  color: #0b0f1a;
+  cursor: pointer;
+  box-shadow: 0 12px 30px rgba(249, 115, 22, 0.35);
+  transition: transform 0.12s ease, box-shadow 0.12s ease;
+}
+
+button:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 14px 34px rgba(249, 115, 22, 0.42);
+}
+
+button:active {
+  transform: translateY(0);
+  box-shadow: 0 10px 26px rgba(249, 115, 22, 0.3);
+}
+
+.status {
+  padding: 10px 14px;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.05);
+  color: var(--muted);
+  min-width: 96px;
+  text-align: center;
+}
+
+.output {
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 14px;
+  padding: 16px;
+  background: rgba(255, 255, 255, 0.02);
+  line-height: 1.5;
+}
+
+.output strong {
+  color: #fefefe;
+}
+
+.error {
+  color: var(--error);
+  min-height: 20px;
+  margin-top: 12px;
+}
+
+@media (max-width: 600px) {
+  .card {
+    padding: 20px;
+  }
+  h1 {
+    font-size: 26px;
+  }
+  button {
+    width: 100%;
+    text-align: center;
+  }
+  .controls {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}
